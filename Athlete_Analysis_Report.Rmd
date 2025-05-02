@@ -1,0 +1,110 @@
+---
+title: "Athlete Training Analysis: Fast-Twitch vs. Slow-Twitch"
+author: "Alex"
+date: "May 2, 2025"
+output: html_document
+---
+
+## Introduction
+This project compares athletes training fast-twitch muscle fibers (sprinting, resistance training, plyometrics) versus those training slow-twitch fibers (jogging, light running). We analyze speed, endurance, and recovery time using a simulated dataset inspired by real-world studies.
+
+## Data Overview
+The dataset includes 100 athletes with the following variables:
+
+- **Training_Type**: Fast-Twitch or Slow-Twitch
+- **Age**: 18–40 years
+- **STMF_Percentage**: Slow-twitch muscle fiber percentage
+- **Speed_mps**: Speed in meters per second (100m sprint)
+- **Endurance_min**: Endurance in minutes (sustained jogging)
+- **Recovery_Time_min**: Recovery time after high-intensity effort
+- **Training_Frequency**: Weekly training sessions
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+```{r load-data, echo=TRUE}
+data <- read_csv("athlete_training_data_cleaned.csv")
+```
+## Data Analysis
+
+### Summary Statistics
+
+```{r summary-stats, echo=TRUE}
+
+summary_stats <- data %>%
+  group_by(Training_Type) %>%
+  summarise(
+    Avg_Speed = mean(Speed_mps),
+    Avg_Endurance = mean(Endurance_min),
+    Avg_Recovery = mean(Recovery_Time_min),
+    Avg_STMF = mean(STMF_Percentage)
+  )
+summary_stats
+```
+
+### Statistical Tests
+
+```{r t-tests, echo=TRUE}
+
+speed_test <- t.test(Speed_mps ~ Training_Type, data = data)
+endurance_test <- t.test(Endurance_min ~ Training_Type, data = data)
+recovery_test <- t.test(Recovery_Time_min ~ Training_Type, data = data)
+speed_test
+endurance_test
+recovery_test
+```
+
+## Data Visualizations
+
+### Speed Comparison
+
+```{r speed-plot, echo=TRUE, fig.align='center'}
+
+speed_plot <- ggplot(data, aes(x = Training_Type, y = Speed_mps, fill = Training_Type)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Speed Comparison by Training Type", x = "Training Type", y = "Speed (m/s)") +
+  scale_fill_manual(values = c("Fast-Twitch" = "coral", "Slow-Twitch" = "skyblue"))
+speed_plot
+```
+
+### Endurance Comparison
+
+```{r endurance-plot, echo=TRUE, fig.align='center'}
+
+endurance_plot <- ggplot(data, aes(x = Training_Type, y = Endurance_min, fill = Training_Type)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Endurance Comparison by Training Type", x = "Training Type", y = "Endurance (min)") +
+  scale_fill_manual(values = c("Fast-Twitch" = "coral", "Slow-Twitch" = "skyblue"))
+endurance_plot
+```
+
+### Speed vs. Endurance
+
+```{r scatter-plot, echo=TRUE, fig.align='center'}
+
+scatter_plot <- ggplot(data, aes(x = Speed_mps, y = Endurance_min, color = Training_Type)) +
+  geom_point(size = 3) +
+  theme_minimal() +
+  labs(title = "Speed vs. Endurance by Training Type", x = "Speed (m/s)", y = "Endurance (min)") +
+  scale_color_manual(values = c("Fast-Twitch" = "coral", "Slow-Twitch" = "skyblue"))
+scatter_plot
+```
+
+## Tableau Dashboard
+Explore an interactive dashboard with additional visualizations: https://public.tableau.com/app/profile/alexander.gallagher/viz/Athlete_Training_Comparison/Dashboard1
+
+## Key Findings
+Fast-twitch athletes have higher speeds (8–10 m/s) compared to slow-twitch athletes (5–6.7 m/s).  
+
+Slow-twitch athletes excel in endurance (60–90 minutes) compared to fast-twitch athletes (30–50 minutes).  
+
+Fast-twitch athletes take longer to recover (40–60 minutes) than slow-twitch athletes (20–40 minutes).
+
+## Conclusion
+Training focus significantly impacts athlete performance. Fast-twitch training enhances speed, while slow-twitch training boosts endurance. These insights can guide training programs for athletes based on their goals.
+
+
+
